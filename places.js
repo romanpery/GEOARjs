@@ -35,15 +35,15 @@ window.onload = () => {
 function staticLoadPlaces() {
     return [
         {
-            name: "CVS",
+            name: "Casa",
             location: {
-                lat: , // change here latitude if using static data
-                lng: , // change here longitude if using static data
+                lat: 17.272098, // change here latitude if using static data
+                lng: 97.666782, // change here longitude if using static data
             }
         },
         
         {
-            name: 'Blink Fitness',
+            name: 'Rio',
             location: {
                 lat: ,
                 lng: ,
@@ -51,7 +51,7 @@ function staticLoadPlaces() {
         },
 
         {
-            name: 'Bus',
+            name: 'Calle',
             location: {
                 lat: ,
                 lng: ,
