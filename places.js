@@ -65,26 +65,17 @@ function staticLoadPlaces() {
 
 
 
-
-
-
-
-
-
-
-
-
 // getting places from REST APIs
 function dynamicLoadPlaces(position) {
     let params = {
         radius: 300,    // search places not farther than this value (in meters)
-        clientId: 'PONER LOS CODIGOS',
-        clientSecret: 'PONER LOS CODIGOS',
+        clientId: 'SUE1PJNIZJU31SLLXSSQJGVWAIIH4QIPYH5N4HBZFLAMKB5U',
+        clientSecret: 'FNCCYIW2Z21P12QB02U4A5X5D0F5YV0O2OURDVXQTSH0XPUV',
         version: '20300101',    // foursquare versioning, required but unuseful for this demo
     };
 
     // CORS Proxy to avoid CORS problems
-    let corsProxy = 'https://cors-anywhere.herokuapp.com/';
+    let corsProxy = 'https://tlaxiaco.herokuapp.com/';
 
     // Foursquare API
     let endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
