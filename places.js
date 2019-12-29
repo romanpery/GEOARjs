@@ -1,74 +1,29 @@
+const loadPlaces = function(coords) {
+    // COMMENT FOLLOWING LINE IF YOU WANT TO USE STATIC DATA AND ADD COORDINATES IN THE FOLLOWING 'PLACES' ARRAY
+    const method = 'api';
 
-window.onload = () => {
-    let method = 'dynamic';
-
-    // if you want to statically add places, de-comment following line:
-    method = 'static';
-    if (method === 'static') {
-        let places = staticLoadPlaces();
-        return renderPlaces(places);
-    }
-
-    if (method !== 'static') {
-        // first get current user location
-        return navigator.geolocation.getCurrentPosition(function (position) {
-
-            // than use it to load from remote APIs some places nearby
-            dynamicLoadPlaces(position.coords)
-                .then((places) => {
-                    renderPlaces(places);
-                })
-        },
-            (err) => console.error('Error in retrieving position', err),
-            {
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: 27000,
-            }
-        );
-    }
-};
-
-
-
-
-function staticLoadPlaces() {
-    return [
+    const PLACES = [
         {
             name: "Casa",
             location: {
-                lat: 17.272073, // change here latitude if using static data
-                lng: -97.666767, // change here longitude if using static data
-            }
-        },
-        
-        
-        {
-            name: 'Terreno',
-            location: {
-                lat: 17.272030,
-                lng: -97.666553,
-            }
-        },
+                lat: 17.272127, // add here latitude if using static data
+                lng: -97.666844, // add here longitude if using static data
 
-         
-        {
-            name: 'Calle',
-            location: {
-                lat: 17.272093,
-                lng:  -97.666899,
             }
         },
-
-         
     ];
-}
 
+     
+    if (method === 'api') {
+        return loadPlaceFromAPIs(coords);
+    }
 
+    return Promise.resolve(PLACES);
+};
 
 // getting places from REST APIs
-function dynamicLoadPlaces(position) {
-    let params = {
+function loadPlaceFromAPIs(position) {
+    const params = {
         radius: 300,    // search places not farther than this value (in meters)
         clientId: 'SUE1PJNIZJU31SLLXSSQJGVWAIIH4QIPYH5N4HBZFLAMKB5U',
         clientSecret: 'FNCCYIW2Z21P12QB02U4A5X5D0F5YV0O2OURDVXQTSH0XPUV',
@@ -76,10 +31,10 @@ function dynamicLoadPlaces(position) {
     };
 
     // CORS Proxy to avoid CORS problems
-    let corsProxy = 'https://tlaxiaco.herokuapp.com/';
+    const corsProxy = 'https://tlaxiaco.herokuapp.com/';
 
     // Foursquare API
-    let endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
+    const endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
         &ll=${position.latitude},${position.longitude}
         &radius=${params.radius}
         &client_id=${params.clientId}
@@ -98,40 +53,64 @@ function dynamicLoadPlaces(position) {
         })
 };
 
-function renderPlaces(places) {
-    let scene = document.querySelector('a-scene');
 
-    places.forEach((place) => {
-        let latitude = place.location.lat;
-        let longitude = place.location.lng;
+window.onload = () => {
+    const scene = document.querySelector('a-scene');
 
-        // add place name
-       // let text = document.createElement('a-link');
-       // text.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude};`);
-       // text.setAttribute('title', place.name);
-       // text.setAttribute('href', 'http://www.example.com/');
-        // text.setAttribute('scale', '10 10 10');
+    // first get current user location
+    return navigator.geolocation.getCurrentPosition(function (position) {
 
+        // then use it to load from remote APIs some places nearby
+        loadPlaces(position.coords)
+            .then((places) => {
+                places.forEach((place) => {
+                    const latitude = place.location.lat;
+                    const longitude = place.location.lng;
 
-        // add place icon
-        const icon = document.createElement('a-image');
-        icon.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
-        icon.setAttribute('name', place.name);
-        icon.setAttribute('src', './map-marker.png');
+                    // add place icon
+                    const icon = document.createElement('a-image');
+                    icon.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
+                    icon.setAttribute('name', place.name);
+                    icon.setAttribute('src', './map-marker.png');
 
+                    // for debug purposes, just show in a bigger scale, otherwise I have to personally go on places...
+                    icon.setAttribute('scale', '20, 20');
 
-        icon.setAttribute('scale', '30, 30, 30');
+                    icon.addEventListener('loaded', () => window.dispatchEvent(new CustomEvent('gps-entity-place-loaded')));
 
-        icon.addEventListener('loaded', () => {window.dispatchEvent(new CustomEvent('gps-entity-place-loaded'))
-         });
+                    const clickListener = function(ev) {
+                        ev.stopPropagation();
+                        ev.preventDefault();
 
+                        const name = ev.target.getAttribute('name');
 
+                        const el = ev.detail.intersection && ev.detail.intersection.object.el;
 
-        text.addEventListener('loaded', () => {
-            window.dispatchEvent(new CustomEvent('gps-entity-place-loaded'))
-        });
+                        if (el && el === ev.target) {
+                            const label = document.createElement('span');
+                            const container = document.createElement('div');
+                            container.setAttribute('id', 'place-label');
+                            label.innerText = name;
+                            container.appendChild(label);
+                            document.body.appendChild(container);
 
-        scene.appendChild(text);
-        scene.appendChild(icon);
-    });
-}
+                            setTimeout(() => {
+                                container.parentElement.removeChild(container);
+                            }, 1500);
+                        }
+                    };
+
+                    icon.addEventListener('click', clickListener);
+                    
+                    scene.appendChild(icon);
+                });
+            })
+    },
+        (err) => console.error('Error in retrieving position', err),
+        {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 27000,
+        }
+    );
+};
