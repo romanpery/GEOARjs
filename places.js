@@ -13,12 +13,14 @@ const loadPlaces = function(coords) {
         {
             name: "Vecino 2",
             location: {
-                lat: 17.272039, // add here latitude if using static data
-                lng: -97.667047, // add here longitude if using static data
+                lat: 17.271835, // add here latitude if using static data
+                lng: -97.667311, // add here longitude if using static data
             }
         },
     ];     
 
+    
+    
     if (method === 'api') {
         return loadPlaceFromAPIs(coords);
     }
