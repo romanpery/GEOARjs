@@ -4,15 +4,21 @@ const loadPlaces = function(coords) {
 
     const PLACES = [
         {
-            name: "Your place name",
+            name: "Vecino",
             location: {
-                lat: 17.272136, // add here latitude if using static data
-                lng: -97.666865, // add here longitude if using static data
+                lat: 17.272182, // add here latitude if using static data
+                lng: -97.666975, // add here longitude if using static data
             }
         },
-    ];
+        {
+            name: "Vecino 2",
+            location: {
+                lat: 17.272039, // add here latitude if using static data
+                lng: -97.667047, // add here longitude if using static data
+            }
+        },
+    ];     
 
-    
     if (method === 'api') {
         return loadPlaceFromAPIs(coords);
     }
