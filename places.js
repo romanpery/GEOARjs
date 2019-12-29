@@ -6,19 +6,17 @@ const loadPlaces = function(coords) {
         {
             name: "Casa",
             location: {
-                lat: 17.272127, // add here latitude if using static data
-                lng: -97.666844, // add here longitude if using static data
-
+                lat: 17.272136, // add here latitude if using static data
+                lng: -97.666865, // add here longitude if using static data
             }
         },
     ];
-
-     
+ 
     if (method === 'api') {
         return loadPlaceFromAPIs(coords);
     }
 
-    return Promise.resolve(PLACES);
+    return PLACES;
 };
 
 // getting places from REST APIs
@@ -60,7 +58,7 @@ window.onload = () => {
     // first get current user location
     return navigator.geolocation.getCurrentPosition(function (position) {
 
-        // then use it to load from remote APIs some places nearby
+        // than use it to load from remote APIs some places nearby
         loadPlaces(position.coords)
             .then((places) => {
                 places.forEach((place) => {
@@ -69,9 +67,9 @@ window.onload = () => {
 
                     // add place icon
                     const icon = document.createElement('a-image');
-                    icon.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
+                    icon.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude};`);
                     icon.setAttribute('name', place.name);
-                    icon.setAttribute('src', './map-marker.png');
+                    icon.setAttribute('src', '../assets/map-marker.png');
 
                     // for debug purposes, just show in a bigger scale, otherwise I have to personally go on places...
                     icon.setAttribute('scale', '20, 20');
@@ -101,7 +99,7 @@ window.onload = () => {
                     };
 
                     icon.addEventListener('click', clickListener);
-                    
+
                     scene.appendChild(icon);
                 });
             })
