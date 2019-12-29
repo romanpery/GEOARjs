@@ -4,14 +4,15 @@ const loadPlaces = function(coords) {
 
     const PLACES = [
         {
-            name: "Casa",
+            name: "Your place name",
             location: {
                 lat: 17.272136, // add here latitude if using static data
                 lng: -97.666865, // add here longitude if using static data
             }
         },
     ];
- 
+
+    
     if (method === 'api') {
         return loadPlaceFromAPIs(coords);
     }
@@ -23,13 +24,13 @@ const loadPlaces = function(coords) {
 function loadPlaceFromAPIs(position) {
     const params = {
         radius: 300,    // search places not farther than this value (in meters)
-        clientId: 'SUE1PJNIZJU31SLLXSSQJGVWAIIH4QIPYH5N4HBZFLAMKB5U',
-        clientSecret: 'FNCCYIW2Z21P12QB02U4A5X5D0F5YV0O2OURDVXQTSH0XPUV',
+        clientId: 'HZIJGI4COHQ4AI45QXKCDFJWFJ1SFHYDFCCWKPIJDWHLVQVZ',
+        clientSecret: 'GYRKWWJMO2WK3KIRWBXIN5FQAWXTVFIK2QM4VQWNQ4TRAKWH',
         version: '20300101',    // foursquare versioning, required but unuseful for this demo
     };
 
     // CORS Proxy to avoid CORS problems
-    const corsProxy = 'https://tlaxiaco.herokuapp.com/';
+    const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
     // Foursquare API
     const endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
