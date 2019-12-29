@@ -37,29 +37,30 @@ function staticLoadPlaces() {
         {
             name: "Casa",
             location: {
-                lat: 17.272098, // change here latitude if using static data
-                lng: 97.666782, // change here longitude if using static data
+                lat: 17.272073, // change here latitude if using static data
+                lng: -97.666767, // change here longitude if using static data
             }
         },
         
+        
         {
-            name: 'Rio',
+            name: 'Terreno',
             location: {
-                lat: ,
-                lng: ,
+                lat: 17.272030,
+                lng: -97.666553,
             }
         },
 
+         
         {
             name: 'Calle',
             location: {
-                lat: ,
-                lng: ,
+                lat: 17.272093,
+                lng:  -97.666899,
             }
         },
 
-        
-
+         
     ];
 }
 
