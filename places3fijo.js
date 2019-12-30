@@ -1,6 +1,6 @@
 const loadPlaces = function(coords) {
     // COMMENT FOLLOWING LINE IF YOU WANT TO USE STATIC DATA AND ADD COORDINATES IN THE FOLLOWING 'PLACES' ARRAY
-     //const method = 'ap';
+     //const method = 'api';
 
     const PLACES = [
         {
