@@ -6,28 +6,28 @@ const loadPlaces = function(coords) {
         {
             name: "Vecino",
             location: {
-                lat: 17.268587, // add here latitude if using static data
-                lng: -97.683467, // add here longitude if using static data
+                lat: 17.271825, // add here latitude if using static data
+                lng: -97.667340, // add here longitude if using static data
             }
         },
         {
             name: "Vecino 2",
             location: {
-                lat: 17.268587, // add here latitude if using static data
-                lng: -97.683467, // add here longitude if using static data
+                lat: 17.272431, // add here latitude if using static data
+                lng: -97.666671, // add here longitude if using static data
             }
         },
 
         {
             name: "Vecino 3",
             location: {
-                lat: 17.268587, // add here latitude if using static data
-                lng: -97.683467, // add here longitude if using static data
+                lat: 17.272606, // add here latitude if using static data
+                lng: -97.667162, // add here longitude if using static data
             }
         },
 
     ];
-
+   
   
     if (method === 'api') {
         return loadPlaceFromAPIs(coords);
