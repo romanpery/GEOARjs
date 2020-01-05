@@ -46,9 +46,18 @@ function staticLoadPlaces() {
                 lat: 17.271983,
                 lng: -97.667155,
             }
+        },
+
+        {
+            name: 'Rio',
+            location: {
+                lat: 17.272053,
+                lng: -97.666369,
+            }
         }
     ];
 }
+
 
  
 // getting places from REST APIs
