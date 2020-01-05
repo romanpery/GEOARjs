@@ -35,20 +35,22 @@ function staticLoadPlaces() {
         {
             name: "Vecino",
             location: {
-                lat: 0, // add here latitude if using static data
-                lng: 0, // add here longitude if using static data
+                lat: 17.272236, // add here latitude if using static data
+                lng: -97.667063, // add here longitude if using static data
             }
         },
+
         {
             name: 'Vecino 2',
             location: {
-                lat: 0,
-                lng: 0,
+                lat: 17.271983,
+                lng: -97.667155,
             }
         }
     ];
 }
 
+ 
 // getting places from REST APIs
 function dynamicLoadPlaces(position) {
     let params = {
