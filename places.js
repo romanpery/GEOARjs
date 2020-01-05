@@ -34,13 +34,13 @@ function staticLoadPlaces() {
         {
             name: "Rio",
             location: {
-                lat: 44.493271, // change here latitude if using static data
-                lng: 11.326040, // change here longitude if using static data
+                lat: 17.271938, // change here latitude if using static data
+                lng:-97.666549, // change here longitude if using static data
             }
         },
     ];
 }
-
+ 
 // getting places from REST APIs
 function dynamicLoadPlaces(position) {
     let params = {
