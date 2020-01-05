@@ -1,54 +1,68 @@
-const loadPlaces = function (coords) {
-    // COMMENT FOLLOWING LINE IF YOU WANT TO USE STATIC DATA AND ADD COORDINATES IN THE FOLLOWING 'PLACES' ARRAY
-    const method = 'api';
+window.onload = () => {
+    let method = 'dynamic';
 
-        const PLACES = [
-            {
-                name: "Vecino",
-                location: {
-                    lat: 17.271825, // add here latitude if using static data
-                    lng: -97.667340, // add here longitude if using static data
-                }
-            },
-            {
-                name: "Vecino 2",
-                location: {
-                    lat: 17.272431, // add here latitude if using static data
-                    lng: -97.666671, // add here longitude if using static data
-                }
-            },
-    
-            {
-                name: "Vecino 3",
-                location: {
-                    lat: 17.272606, // add here latitude if using static data
-                    lng: -97.667162, // add here longitude if using static data
-                }
-            },
-    
-        ];
+    // if you want to statically add places, de-comment following line
+    method = 'static';
 
-    if (method === 'api') {
-        return loadPlaceFromAPIs(coords);
+    if (method === 'static') {
+        let places = staticLoadPlaces();
+        renderPlaces(places);
     }
 
-    return PLACES;
+    if (method !== 'static') {
+
+        // first get current user location
+        return navigator.geolocation.getCurrentPosition(function (position) {
+
+            // than use it to load from remote APIs some places nearby
+            dynamicLoadPlaces(position.coords)
+                .then((places) => {
+                    renderPlaces(places);
+                })
+        },
+            (err) => console.error('Error in retrieving position', err),
+            {
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 27000,
+            }
+        );
+    }
 };
 
+function staticLoadPlaces() {
+    return [
+        {
+            name: "Vecino",
+            location: {
+                lat: 0, // add here latitude if using static data
+                lng: 0, // add here longitude if using static data
+            }
+        },
+        {
+            name: 'Vecino 2',
+            location: {
+                lat: 0,
+                lng: 0,
+            }
+        }
+    ];
+}
+
 // getting places from REST APIs
-function loadPlaceFromAPIs(position) {
-    const params = {
-        radius: 250,    // search places not farther than this value (in meters)
-        clientId: 'HZIJGI4COHQ4AI45QXKCDFJWFJ1SFHYDFCCWKPIJDWHLVQVZ',
-        clientSecret: 'GYRKWWJMO2WK3KIRWBXIN5FQAWXTVFIK2QM4VQWNQ4TRAKWH',
+function dynamicLoadPlaces(position) {
+    let params = {
+        radius: 300,    // search places not farther than this value (in meters)
+        clientId: 'HZIJGI4COHQ4AI45QXKCDFJWFJ1SFHYDFCCWKPIJDWHLVQVZ',   // add your credentials here
+        clientSecret: '',   // add your credentials here
         version: '20300101',    // foursquare versioning, required but unuseful for this demo
     };
 
     // CORS Proxy to avoid CORS problems
-    const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+    let corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
     // Foursquare API
-    const endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
+    let endpoint = `${corsProxy}https://api.foursquare.com/v2/venues/search?intent=checkin
         &ll=${position.latitude},${position.longitude}
         &radius=${params.radius}
         &client_id=${params.clientId}
@@ -67,40 +81,48 @@ function loadPlaceFromAPIs(position) {
         })
 };
 
+function renderPlaces(places) {
+    let scene = document.querySelector('a-scene');
 
-window.onload = () => {
-    const scene = document.querySelector('a-scene');
+    places.forEach((place) => {
+        const latitude = place.location.lat;
+        const longitude = place.location.lng;
 
-    // first get current user location
-    return navigator.geolocation.getCurrentPosition(function (position) {
+        // add place icon
+        const icon = document.createElement('a-image');
+        icon.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
+        icon.setAttribute('name', place.name);
+        icon.setAttribute('src', '../assets/map-marker.png');
 
-        // than use it to load from remote APIs some places nearby
-        loadPlaces(position.coords)
-            .then((places) => {
-                places.forEach((place) => {
-                    const latitude = place.location.lat;
-                    const longitude = place.location.lng;
+        // for debug purposes, just show in a bigger scale, otherwise I have to personally go on places...
+        icon.setAttribute('scale', '20, 20');
 
-                    // add place name
-                    const text = document.createElement('a-link');
-                    text.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude};`);
-                    text.setAttribute('title', place.name);
-                    text.setAttribute('href', 'http://www.example.com/');
-                    text.setAttribute('scale', '13 13 13');
+        icon.addEventListener('loaded', () => window.dispatchEvent(new CustomEvent('gps-entity-place-loaded')));
 
-                    text.addEventListener('loaded', () => {
-                        window.dispatchEvent(new CustomEvent('gps-entity-place-loaded'))
-                    });
+        const clickListener = function (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
 
-                    scene.appendChild(text);
-                });
-            })
-    },
-        (err) => console.error('Error in retrieving position', err),
-        {
-            enableHighAccuracy: true,
-            maximumAge: 0,
-            timeout: 27000,
-        }
-    );
-};
+            const name = ev.target.getAttribute('name');
+
+            const el = ev.detail.intersection && ev.detail.intersection.object.el;
+
+            if (el && el === ev.target) {
+                const label = document.createElement('span');
+                const container = document.createElement('div');
+                container.setAttribute('id', 'place-label');
+                label.innerText = name;
+                container.appendChild(label);
+                document.body.appendChild(container);
+
+                setTimeout(() => {
+                    container.parentElement.removeChild(container);
+                }, 1500);
+            }
+        };
+
+        icon.addEventListener('click', clickListener);
+
+        scene.appendChild(icon);
+    });
+}
